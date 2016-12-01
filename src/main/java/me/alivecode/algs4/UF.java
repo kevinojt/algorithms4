@@ -42,13 +42,11 @@ public class UF {
         for(int i = 0; i < n; i++) {
             StdOut.printf("%4d", i);
         }
-        StdOut.println();
-        StdOut.printf("%-8s", "linked:");
+        StdOut.printf("\n%-8s", "linked:");
         for(int i = 0; i < n; i++) {
             StdOut.printf("%4d", parent[i]);
         }
-        StdOut.println();
-        StdOut.printf("%-8s", "rank:");
+        StdOut.printf("\n%-8s", "rank:");
         for(int i = 0; i < n; i++) {
             StdOut.printf("%4d", rank[i]);
         }
