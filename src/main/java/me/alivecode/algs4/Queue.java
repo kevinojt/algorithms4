@@ -6,6 +6,10 @@ import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
+// Common queue structure: first->other nodes->last->null.
+// Only one node in the queue: first(last)->null.
+// Dequeue when there is only one node in the queue: set first=first.next, set last=null.
+// Enqueue when there the queue is empty: set last=new created node, set first=first.
 public class Queue<Item> implements Iterable<Item> {
     private Node first;
     private Node last;
@@ -36,11 +40,11 @@ public class Queue<Item> implements Iterable<Item> {
         last = new Node();
         last.item = item;
         last.next = null;
-        if (isEmpty()) {
-            first = last;
+        if (isEmpty()) { 
+            first = last; // Only one node in the queue now, the first and last node are same. 
         }
         else {
-            oldLast.next = last;
+            oldLast.next = last; // Add last added node to the queue.
         }
         size++;
     }
@@ -50,7 +54,7 @@ public class Queue<Item> implements Iterable<Item> {
         Item item = first.item;
         first = first.next;
         if (isEmpty()) {
-            last = null;
+            last = null; // The queue is empty, the last node should be null.
         }
         size--;
         return item;
