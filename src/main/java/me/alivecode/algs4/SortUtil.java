@@ -14,8 +14,12 @@ class SortUtil {
     }
 
     public static boolean isSorted(Comparable[] a) {
-        for(int i = 1; i < a.length; i++) {
-            if (less(a[i], a[i-1])) { return false; }
+        return isSorted(a, 0, a.length);
+    }
+
+    public static boolean isSorted(Comparable[] a, int lo, int hi) {
+        for(int i = lo + 1; i < hi; i++) {
+            if(less(a[i], a[i-1])) { return false; }
         }
         return true;
     }
