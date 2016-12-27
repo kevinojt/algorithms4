@@ -90,7 +90,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
     }
     
     /**
-     * Check if all children's keys are smaller than parent's key. 
+     * Check if all children's keys are smaller than their parent's key. 
      */
     private boolean isMaxHeap(int k) {
         if (k > N) return true;
@@ -105,7 +105,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
     
     private void resize(int capacity) {
         if (capacity <= N - 1) return;
-        Key[] tmp = (Key[])(new Object[capacity]);
+        Key[] tmp = (Key[]) new Object[capacity];
         for(int i = N; i >= 1; i--) {
            tmp[i] = pq[i];
         }
@@ -121,6 +121,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
         public HeapIterator() {
             // Construct copy with arrays is much more faster
             // than by insert key into copy one by one.
+            // Copy pg to new arr off-by-one because pg is one-based. 
             Key[] keys = (Key[])new Object[pq.length-1];
             for(int i = 1; i < pq.length; i++) {
                 keys[i-1] = pq[i];
