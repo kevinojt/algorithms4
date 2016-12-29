@@ -16,7 +16,7 @@ public class Quick3way {
             int cmp = a[i].compareTo(v);
             // lt always points to the left most item valued 'v'. 
             // Move smaller items to the left side of 'v'.
-            // This operation inserted an item to the left of lt and i, 
+            // This operation inserted an item to the left side of lt and i, 
             // increase lt and i to give one slot to that item.
             if (cmp < 0) { SortUtil.exch(a, lt++, i++); } 
             // Move larger items to the right side of 'v' 
