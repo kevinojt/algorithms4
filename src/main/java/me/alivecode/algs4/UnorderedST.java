@@ -27,7 +27,7 @@ public class UnorderedST<Key, Value> {
         if (tmp == null) {
             Node n = new Node(key, value);
             n.next = first;
-            first = newNode;
+            first = n;
             size++;
         }
         else if (value != null) {
