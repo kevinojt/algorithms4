@@ -85,14 +85,14 @@ public class BST<Key extends Comparable<Key>, Value> {
         return min(root).key;
     }
 
-    public Key max() {
-        if (isEmpty()) throw new NoSuchElementException("called max() whit empty symbol table.");
-        return max(root).key;
-    }
-
     private Node min(Node x) {
         if (x.left == null) return x;
         return min(x.left);
+    }
+
+    public Key max() {
+        if (isEmpty()) throw new NoSuchElementException("called max() whit empty symbol table.");
+        return max(root).key;
     }
 
     private Node max(Node x) {
@@ -113,8 +113,8 @@ public class BST<Key extends Comparable<Key>, Value> {
         assert check();
     }
 
+    // Delete the largest node of x and its subtree.
     private Node deleteMax(Node x) {
-        if (x == null) return null;
         if (x.right == null) return x.left;
         x.right = deleteMax(x.right);
         x.size = 1 + size(x.left) + size(x.right);
@@ -145,7 +145,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         }
     }
     
-    // delete x's smallest child node.
+    // delete smallest node of x's and its subtree.
     private Node deleteMin(Node x) {
         // smallest node found.
         // replace it as its right node for deleting it.
@@ -169,15 +169,143 @@ public class BST<Key extends Comparable<Key>, Value> {
         return size() == 0;
     }
 
-    private boolean check() {
-        return check(root);
+    /**
+     * Return all keys in symbol in accend order.
+     */
+    public Iterable<Key> keys() {
+        return keys(min(), max());
+    } 
+
+    /**
+     * Return all keys between {@code lo} and {@code hi} in symbol table.
+     *
+     * @param lo lower bound of key. Must larger than or equal to {@code min()}.
+     * @param hi upper bound of key. Must less than or equal to {@code max()}.
+     * @throws IllegalArgumentException if lo or hi is null.
+     */
+    public Iterable<Key> keys(Key lo, Key hi) {
+        if (lo == null) throw new IllegalArgumentException("first argument to keys() is null.");
+        if (hi == null) throw new IllegalArgumentException("second argument to keys() is null.");
+        Queue<Key> queue = new Queue<Key>();
+        keys(queue, root, lo, hi);
+        return queue;
     }
 
-    private boolean check(Node x) {
+    private void keys(Queue<Key> queue, Node x, Key lo, Key hi) {
+        if (x == null) return;
+        int cmplo = lo.compareTo(x.key);
+        int cmphi = hi.compareTo(x.key);
+        if (cmplo < 0) {
+            keys(queue, x.left, lo, hi);
+        }
+        if (cmplo <= 0 && cmphi >= 0) {
+           queue.enqueue(x.key);
+        }
+        if (cmphi > 0) {
+            keys(queue, x.right, lo, hi);
+        }
+    }
+        
+
+    /**
+     * Return kth smallest key in symbol table.
+     *
+     * @param k the order statics.
+     * @return the kth smallest key in symbol table.
+     * @throws IllegalArgumentException if {@code k} not between 0 and size of symble table.
+     */
+    public Key select(int k) {
+        if (k < 0 || k >= size()) throw new IllegalArgumentException("argument to select() must between 0 and size()-1.");
+        return select(root, k).key;
+    }
+
+    private Node select(Node x, int k) {
+        if (x == null) return null;
+        int t = size(x.left);
+        if (t > k) { return select(x.left, k); }
+        else if (t < k) { return select(x.right, k-t-1); }
+        else return x;
+    }
+
+    /**
+     * Return the number of keys in the symbol table strictly less than {@code key}.
+     *
+     * @param key the key
+     * @return the number of keys in the symbol table strickly less than {@code key}.
+     * @throws IllegalArgumentException if {@code kye} is {@code null}.
+     */
+    public int rank(Key key) {
+        if (key == null) throw new IllegalArgumentException("argument to rank() is null.");
+        return rank(root, key);
+    }
+
+    private int rank(Node x, Key key) {
+        if (x == null) return 0;
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) {
+            return rank(x.left, key);
+        }
+        else if (cmp > 0) {
+            return 1 + size(x.left) + rank(x.right, key);
+        }
+        else {
+            return size(x.left);
+        }
+    }
+
+    private boolean check() {
+        if (!isBST(root)) {
+            StdOut.println("Not in symmtric order.");
+            return false;
+        }
+        if (!isSizeConsistent()) {
+            StdOut.println("Subtree counts not consistent.");
+            return false;
+        }
+        if (!isRankConsistent()) {
+            StdOut.println("Ranks not consistent.");
+            return false;
+        }
+        return true;
+    }
+
+    // Is symbol table in symmtric order?
+    private boolean isBST(Node x) {
         if (x == null) return true;
-        if (x.left != null && x.right == null) return check(x.left) && x.key.compareTo(x.left.key) > 0;
-        if (x.left == null && x.right != null) return check(x.right) && x.key.compareTo(x.right.key) < 0;
-        return check(x.left) && check(x.right);
+        if (x.left != null  && x.key.compareTo(x.left.key) <= 0) return false;
+        if (x.right != null && x.key.compareTo(x.right.key) >= 0) return false;
+        return isBST(x.left) && isBST(x.right);
+    }
+    // oujt: Bob Dondero's solution from algorithm 4th edtion.
+    // ref to http://algs4.cs.princeton.edu/code/
+    /*
+    private boolean isBST(Node x, Key max, Key min) {
+        if (x == null) return true;
+        if (min != null && x.key.compareTo(min) <= 0) return false;
+        if (max != null && x.key.compareTo(max) >= 0) return false;
+        return isBST(x.left, min, x.key) && isBST(x.right, x.key, max);
+    }
+    */    
+    
+    // Are the size fields correct?
+    private boolean isSizeConsistent() {
+        return isSizeConsistent(root);
+    }
+    private boolean isSizeConsistent(Node x) {
+        if (x == null) return true;
+        if (x.size != size(x.left) + size(x.right) + 1) return false;
+        return isSizeConsistent(x.left) && isSizeConsistent(x.right);
+    }
+   
+    // Check that ranks are consistent.  
+    private boolean isRankConsistent() {
+        for (int i = 0; i < size(); i++) {
+            if (i != rank(select(i))) return false;
+        }
+        for (Key key : keys()) {
+            if (key.compareTo(select(rank(key))) != 0) return false;
+        }
+        return true;
     }
 
     public static void main(String[] args) {
@@ -205,6 +333,9 @@ public class BST<Key extends Comparable<Key>, Value> {
             }
         }        
         StdOut.println(bst.size() + " item(s).");
+        for(String k : bst.keys()) {
+            StdOut.printf("key: %s, value: %s.\n", k, bst.get(k));
+        }
     }
 
 }
