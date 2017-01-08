@@ -5,6 +5,9 @@ import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
+/**
+ * A binary search tree.
+ */
 public class BST<Key extends Comparable<Key>, Value> {
     Node root;
 
@@ -27,8 +30,21 @@ public class BST<Key extends Comparable<Key>, Value> {
         root = null;
     }
 
+    /**
+     * Put new node to symbol table if there is no key exists. 
+     * Update value if key already exists.
+     * Delete key if key already exists and value is null.
+     *
+     * @param key the key.
+     * @param value the value. 
+     * @throws IllegalArgumentException if {@code key} is null.
+     */
     public void put(Key key, Value value) {
         if (key == null) throw new IllegalArgumentException("first argument to put() is null.");
+        if (value == null) {
+            delete(key);
+            return;
+        }
         root = put(root, key, value);
         assert check();
     }
@@ -53,6 +69,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         if (key == null) return;
         if (root == null) return;
         root = delete(root, key);
+        assert check();
     }
 
     private Node delete(Node x, Key key) {
@@ -100,11 +117,19 @@ public class BST<Key extends Comparable<Key>, Value> {
         return max(x.right);
     }
 
-    
     public void deleteMin() {
         if (isEmpty()) throw new NoSuchElementException("Symbol table underflow.");
         root = deleteMin(root);
         assert check();
+    }
+    // delete smallest key of x and its subtree.
+    private Node deleteMin(Node x) {
+        // smallest node found.
+        // replace it as its right node for deleting it.
+        if (x.left == null) return x.right;
+        x.left = deleteMin(x.left);
+        x.size = size(x.left) + size(x.right) + 1;
+        return x;
     }
 
     public void deleteMax() {
@@ -113,7 +138,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         assert check();
     }
 
-    // Delete the largest node of x and its subtree.
+    // Delete the largest key of x and its subtree.
     private Node deleteMax(Node x) {
         if (x.right == null) return x.left;
         x.right = deleteMax(x.right);
@@ -143,16 +168,6 @@ public class BST<Key extends Comparable<Key>, Value> {
         else {
             return x.value;
         }
-    }
-    
-    // delete smallest node of x's and its subtree.
-    private Node deleteMin(Node x) {
-        // smallest node found.
-        // replace it as its right node for deleting it.
-        if (x.left == null) return x.right;
-        x.left = deleteMin(x.left);
-        x.size = size(x.left) + size(x.right) + 1;
-        return x;
     }
 
     public int size() {
@@ -251,6 +266,56 @@ public class BST<Key extends Comparable<Key>, Value> {
         else {
             return size(x.left);
         }
+    }
+
+    /** 
+     * Return largest key that smaller than or equal to the {@code key}.
+     *
+     * @param key the key.
+     * @return largest key that smaller than or equal to {@code key}.
+     * @throws IllegalArgumentException if {@code key} is {@code null}.
+     * @throws NoSuchElementException if symbol table is null.
+     */
+    public Key floor(Key key) {
+        if (key == null) throw new IllegalArgumentException("arguement to floor() is null.");
+        if (isEmpty()) throw new NoSuchElementException("call floor() with empty symbol table.");
+        Node t = floor(root, key);
+        if (t == null) return null;
+        return t.key;
+    }
+
+    private Node floor(Node x, Key key) {
+        if (x == null) return null; // there is no key smaller than the key.
+        int cmp = key.compareTo(x.key);
+        if (cmp == 0) return x;
+        if (cmp < 0) return floor(x.left, key); // x is larger than the key, go left.
+        Node t = floor(x.right, key); // x is smaller than the key. Is it another key larger than x and smaller than the key?
+        if (t == null) return x; // There is no key larger than key and smaller key, we got x.
+        else return t; // t is the largest key larger than x and smaller than the key.
+    }
+
+    /**
+     * Return smallest key that larger than or equal to the {@code key}.
+     *
+     */
+    public Key ceiling(Key key) {
+        if (key == null) throw new IllegalArgumentException("argument to ceiling() is null.");
+        if (isEmpty()) throw new NoSuchElementException("call ceiling() with symbol table.");
+        Node t = ceiling(root, key);
+        if (t == null) return null;
+        return t.key;
+    }
+
+    private Node ceiling(Node x, Key key) {
+        if (x == null) return null;
+        int cmp = key.compareTo(x.key);
+        if (cmp == 0) return x;
+        if (cmp < 0) { // x is larger than the key.
+            Node t = ceiling(x.left, key); // Is it another key smaller than x?
+            if (t == null) return x; // t is not smaller than x, we got x.
+            else return t;
+        }
+        return ceiling(x.right, key);
     }
 
     private boolean check() {
