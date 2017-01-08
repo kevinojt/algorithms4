@@ -6,10 +6,19 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 
+/* 
+ * Represent a selection sort algorithm.
+ */
 public class Selection {
     private Selection() {}
 
+    /**
+     * Sort a in accending order.
+     *
+     * @param a the array to sort.
+     */
     public static void sort(Comparable[] a) {
+        // find the smallest item in a and move it to the front.
         for(int i = 0; i < a.length; i++) {
             int  min = i;
             for(int j=i+1; j < a.length; j++) {
