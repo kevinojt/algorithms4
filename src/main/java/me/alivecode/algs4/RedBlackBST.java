@@ -2,6 +2,13 @@ package me.alivecode.algs4;
 
 import java.util.NoSuchElementException;
 
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdIn;
+
+/*******************************************************************
+ * Repersent a left-lean Red-black tree.
+ * Original from algorith 4th http://alg4.cs.princeton.edu
+ ******************************************************************/
 public class RedBlackBST<Key extends Comparable<Key>, Value> {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
@@ -483,6 +490,13 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         keysDescendent(h.left, queue);
     }
 
+    /**
+     * Returns keys in the symbol table between {@code lo} and {@code hi}.
+     * @param lo lower bound key.
+     * @param hi upper bound key.
+     * @returns keys between {@code lo} and {@code hi}. 
+     * @throws IllegalArgumentException if {@code lo} or {@code hi} is {@code null}.
+     */
     public Iterable<Key> keys(Key lo, Key hi) {
         if (lo == null) throw new IllegalArgumentException("first argument to keys() is null.");
         if (hi == null) throw new IllegalArgumentException("second argument to keys() is null.");
@@ -502,7 +516,119 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         if (cmphi > 0) keys(h.right, queue, lo, hi);
     }
 
+    /**
+     * Returns the number of keys in the symbol table int given range.
+     *
+     * @param lo minimum endpoint.
+     * @param hi maximum ednpoint.
+     * @returns the number of keys in the symbol table between {@code lo} and {@code hi}.
+     * @throws IllegalArgumentException if {@code lo} or {@code hi} is {@code null}.
+     */
+    public int size(Key lo, Key hi) {
+        if (lo == null) throw new IllegalArgumentException("first argument to size() is null.");
+        if (hi == null) throw new IllegalArgumentException("second argument to size() is null.");
 
+        if (lo.compareTo(hi) > 0) return 0;
+        if (contains(hi)) return rank(hi) - rank(lo) + 1;
+        else return rank(hi) - rank(lo);
+    }
 
-    
+    /********************************************************************************
+     * Check integrity of red-black tree data structure.
+     *******************************************************************************/ 
+
+    private boolean check() {
+        if (!isBST()) {
+            StdOut.println("Not in symetric order.");
+            return false;
+        }
+
+        if (!isSizeConsistent()) {
+            StdOut.println("Subtree counts not consistent.");
+            return false;
+        }
+
+        if (!isRankConsistent()) {
+            StdOut.println("Ranks not consistent.");
+            return false;
+        }
+
+        if (!is23()) {
+            StdOut.println("Not a 2-3 tree");
+            return false;
+        }
+
+        if (!isBalanced()) {
+            StdOut.println("Not balanced");
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isBST() {
+        return isBST(root, null, null);
+    }
+
+    private boolean isBST(Node h, Key min, Key max) {
+        if (h == null) return true;
+        if (min != null && h.key.compareTo(min) <= 0) return false;
+        if (max != null && h.key.compareTo(max) >= 0) return false;
+        return isBST(h.left, min, h.key) && isBST(h.right, h.key, max);
+    }
+
+    private boolean isSizeConsistent() {
+        return isSizeConsistent(root);
+    }
+
+    private boolean isSizeConsistent(Node h) {
+        if (h == null) return true;
+        if (size(h) != size(h.left) + size(h.right) + 1) return false;
+        return isSizeConsistent(h.left) && isSizeConsistent(h.right);
+    }
+
+    private boolean isRankConsistent() {
+        for(int i = 0; i < size(); i++) {
+           if (i != rank(select(i))) return false;
+        }
+        for(Key key : keys()) {
+           if (key.compareTo(select(rank(key))) != 0) return false;
+        }
+        return true;
+    }
+
+    // Does the tree have no red right links, and at most on (left)
+    // red link in a row on any path?
+    private boolean is23() {
+        return is23(root);
+    }
+
+    private boolean is23(Node h) {
+        if (h == null) return true;
+        if (isRed(h.right)) return false;
+        if (h != root && isRed(h) && isRed(h.left)) return false;
+        return is23(h.left) && is23(h.right);
+    }
+
+    // Do all paths from root to leaf have same number of black nodes?
+    private boolean isBalanced() {
+        int black = 0;
+        Node x = root;
+        while (x != null) {
+            if (!isRed(x)) {
+                black++;
+            }
+            x = x.left;
+        } 
+        return isBalanced(root, black);
+    }
+
+    // Does every path from root to leaf have the give number of nodes?
+    private boolean isBalanced(Node h, int black) {
+        if (h == null) return black == 0;
+        if (!isRed(h)) {
+            black--;
+        }
+        return isBalanced(h.left, black) && isBalanced(h.right, black);
+    }
 } 
