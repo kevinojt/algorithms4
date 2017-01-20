@@ -408,6 +408,101 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         }
     }        
 
+    /**
+     * Returns the kth smallest key in the symbol table.
+     * @param k the order statistic.
+     * @return the kth smallest key in the symbol table.
+     * @throws IllegalArgumentException if unless {@code k} is between 0 and <em>N</em> &minus;1.
+     */
+    public Key select(int k) {
+        if (k < 0 || k >= size()) throw new IllegalArgumentException();
+        Node t = select(root, k);
+        return t.key;
+    }
+
+    private Node select(Node h, int k) {
+        int c = size(h.left); 
+        if (c > k) return select(h.left, k);
+        if (c < k) return select(h.right, k-c-1);
+        return h;
+    }
+    
+    /**
+     * Return the number of keys int the symbol table strictly smaller than {@code key}.
+     * @param key the given key.
+     * @returns the number of keys smaller than {@code key}.
+     * @throws IllegalArgumentException if {@code key} is {@code null}.
+     */
+    public int rank(Key key) {
+        if (key == null) throw new IllegalArgumentException("argument to rank() is null.");
+        return rank(root, key);
+    }
+
+    private int rank(Node h, Key key) {
+        if (h == null) return 0;
+        int cmp = key.compareTo(h.key);
+        if (cmp < 0) return rank(h.left, key);
+        if (cmp > 0) return 1 + size(h.left) + rank(h.right, key);
+        return size(h.left);
+    }
+
+    /**********************************************
+     * Range count and range search.
+     *********************************************/
+
+    public Iterable<Key> keys() {
+        if (isEmpty()) return new Queue<Key>();
+        return keys(min(), max());
+    }
+
+    // Returns all keys in the symbol table in accendent order.
+    private Iterable<Key> keysAscendent() {
+        Queue<Key> queue = new Queue<Key>();
+        keysAscendent(root, queue); 
+        return queue;
+    }
+
+    private void keysAscendent(Node h, Queue<Key> queue) {
+        if (h == null) return;
+        keysAscendent(h.left, queue);
+        queue.enqueue(h.key);
+        keysAscendent(h.right, queue);
+    }
+    
+    // Returns all keys int the symbol table in decendent order.
+    private Iterable<Key> keysDescendent() {
+        Queue<Key> queue = new Queue<Key>();
+        keysDescendent(root, queue);
+        return queue;
+    }
+
+    private void keysDescendent(Node h, Queue<Key> queue) {
+        if (h == null) return;
+        keysDescendent(h.right, queue);
+        queue.enqueue(h.key);
+        keysDescendent(h.left, queue);
+    }
+
+    public Iterable<Key> keys(Key lo, Key hi) {
+        if (lo == null) throw new IllegalArgumentException("first argument to keys() is null.");
+        if (hi == null) throw new IllegalArgumentException("second argument to keys() is null.");
+
+        Queue<Key> queue = new Queue<Key>();
+        keys(root, queue, lo, hi);
+        return queue;
+    }
+
+    private void keys(Node h, Queue<Key> queue, Key lo, Key hi) {
+        if (h == null) return;
+
+        int cmplo = lo.compareTo(h.key);
+        int cmphi = hi.compareTo(h.key);
+        if (cmplo < 0) keys(h.left, queue, lo, hi);
+        if (cmplo <= 0 && cmphi >= 0) queue.enqueue(h.key);
+        if (cmphi > 0) keys(h.right, queue, lo, hi);
+    }
 
 
+
+    
 } 
