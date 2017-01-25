@@ -7,7 +7,7 @@ import edu.princeton.cs.algs4.StdIn;
 
 /*******************************************************************
  * Repersent a left-lean Red-black tree.
- * Original from algorith 4th http://alg4.cs.princeton.edu
+ * Original from Algorithm 4th http://alg4.cs.princeton.edu
  ******************************************************************/
 public class RedBlackBST<Key extends Comparable<Key>, Value> {
     private static final boolean RED = true;
@@ -30,6 +30,9 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         }
     }
 
+    /**
+     * Initialize a red-black tree.
+     */
     public RedBlackBST() {
         root = null;
     }
@@ -41,17 +44,17 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         return h.color == RED;
     }
 
-    private int size(Node h) {
-        if (h == null) return 0;
-        return h.size;
-    }
-
     /**
      * Returns the numbers of key-value pairs in the symbol table.
      * @return the number of key-value pairs in the symbol table.
      */
     public int size() {
         return size(root);
+    }
+
+    private int size(Node h) {
+        if (h == null) return 0;
+        return h.size;
     }
 
     /**
@@ -129,8 +132,8 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     }
 
     private Node balance(Node h) {
-        if (isRed(h.right) && !isRed(h.left)) { rotateLeft(h); }
-        if (isRed(h.left) && isRed(h.left.left)) { rotateRight(h); }
+        if (isRed(h.right) && !isRed(h.left)) { h = rotateLeft(h); }
+        if (isRed(h.left) && isRed(h.left.left)) { h = rotateRight(h); }
         if (isRed(h.left) && isRed(h.right)) { filpColors(h); }
         h.size = 1 + size(h.left) + size(h.right);
         return h;
@@ -160,6 +163,14 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
      * Red black tree insertion
      ********************************************/
 
+    /**
+     * Add key-value pair into the symbol table.
+     * Remove key and associated value from the symbol table if value is {@code null}.
+     *
+     * @param key the key.
+     * @param value the value.
+     * @throws IllegalArgumentException if {@code key} is {@code null}.
+     */
     public void put(Key key, Value value) {
         if (key == null) throw new IllegalArgumentException("first argument to put() is null.");
 
@@ -169,6 +180,9 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         }
 
         root = put(root, key, value);
+        root.color = BLACK;
+        
+        assert check();
     }
 
     private Node put(Node h, Key key, Value value) {
@@ -176,27 +190,27 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
         int cmp = key.compareTo(h.key);
         if (cmp > 0) {
-            h = put(h.right, key, value);
+            h.right = put(h.right, key, value);
         }
         else if (cmp < 0) {
-            h = put(h.left, key, value);
+            h.left = put(h.left, key, value);
         }
         else {
             h.value = value;
         }
-    
-        if (isRed(h.right) && !isRed(h.left)) { rotateLeft(h); }
-        if (isRed(h.left) && isRed(h.left.left)) { rotateRight(h); }
+        /*    
+        if (isRed(h.right) && !isRed(h.left)) { h = rotateLeft(h); }
+        if (isRed(h.left) && isRed(h.left.left)) { h = rotateRight(h); }
         if (isRed(h.left) && isRed(h.right)) { filpColors(h); }
         h.size = 1 + size(h.left) + size(h.right);
-
-        return h;
- 
+        */
+        return balance(h);
     }
 
     /********************************************
      * Red-black tree deletion
      *******************************************/
+
     /**
      * Remove the smallest key and associated value from the symbol table.
      * @throws NoSuchElementException if the symbol is empty.
@@ -212,6 +226,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         if (!isEmpty()) {
             root.color = BLACK;
         }
+        assert check();
     }
 
     // Remove the smallest key-value pair rooted at h.
@@ -223,8 +238,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         }
 
         h.left = deleteMin(h.left);
-        h = balance(h);
-        return h;
+        return balance(h);
     }
 
     /**
@@ -242,6 +256,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         if (!isEmpty()) {
             root.color = BLACK;
         }
+        assert check();
     }
 
     // Remove the largest key-value pair rooted at h.
@@ -262,6 +277,11 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     }
 
     //TODO: Read to understand.
+    /**
+     * Remove the key and associated value from the symbol table.
+     * @param key the key.
+     * @throws IllegalArgumentException if the key is {@code null}.
+     */
     public void delete(Key key) {
         if (key == null) throw new IllegalArgumentException("argument to delete() is null.");
         if (!contains(key)) return;
@@ -274,6 +294,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         if (!isEmpty()) {
             root.color = BLACK;
         }
+        assert check();
     }
 
     private Node delete(Node h, Key key) {
@@ -570,6 +591,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         return isBST(root, null, null);
     }
 
+    // Bob Dondero's elegant solution.
     private boolean isBST(Node h, Key min, Key max) {
         if (h == null) return true;
         if (min != null && h.key.compareTo(min) <= 0) return false;
@@ -631,4 +653,39 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         }
         return isBalanced(h.left, black) && isBalanced(h.right, black);
     }
+
+    public static void main(String[] args) {
+        RedBlackBST<String, String> rbt = new RedBlackBST<String, String>();
+        
+        String key = null;
+        String value = null;
+        while(!StdIn.isEmpty()) {
+            if (key == null) {
+                key = StdIn.readString();
+                if (key.startsWith("-")) {
+                    key = key.substring(1, key.length());
+                    value = rbt.get(key);
+                    rbt.delete(key);
+                    StdOut.printf("key: %s, value: %s deleted.\n", key, value);
+                    key = null;
+                    value = null;
+                }
+            }
+            else {
+                value = StdIn.readString();
+                rbt.put(key, value);
+                StdOut.printf("key: %s, value: %s put.\n", key, value);
+                key = null;
+                value = null;
+            }
+        }
+
+        StdOut.println(rbt.size() + " item(s) in the symbol table.");
+        StdOut.println("Height of the red-black tree is " + rbt.height());
+        for(String k : rbt.keys()) {
+            StdOut.printf("key: %s, value: %s.\n", k, rbt.get(k));
+        }
+    }
+
+    
 } 
