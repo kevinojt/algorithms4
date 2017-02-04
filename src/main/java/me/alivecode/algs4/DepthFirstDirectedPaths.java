@@ -5,11 +5,11 @@ import edu.princeton.cs.algs4.StdOut;
 
 
 /**
- * The {@code DirectedDFS} class represents a data type
- * for determining paths from source vertex{@code s} to 
+ * The {@code DepthFirstDirectedPaths} class represents a data type
+ * for determining paths from source vertex{@code s} to
  * every other vertices in digraph {@code G}.
  */
-public class DirectedDFS {
+public class DepthFirstDirectedPaths {
     private boolean marked[];
     private int edgeTo[];
     private int s;
@@ -19,7 +19,7 @@ public class DirectedDFS {
      * Computes the vertices in digraph {@code G} that are reachable from
      * source vertex {@code s}
      */
-    public DirectedDFS(Digraph G, int s) {
+    public DepthFirstDirectedPaths(Digraph G, int s) {
         marked = new boolean[G.V()];
         edgeTo = new int[G.V()];
         count = 0;
@@ -81,7 +81,7 @@ public class DirectedDFS {
         In in = new In(args[0]);
         int s = Integer.parseInt(args[1]);
         Digraph G = new Digraph(in);
-        DirectedDFS path = new DirectedDFS(G, s);
+        DepthFirstDirectedPaths path = new DepthFirstDirectedPaths(G, s);
 
         for(int v = 0; v < G.V(); v++) {
             if (path.hasPathTo(v)) {
@@ -91,13 +91,13 @@ public class DirectedDFS {
                         StdOut.print(w);
                     }
                     else {
-                        StdOut.print("-" + w);
+                        StdOut.print("->" + w);
                     }
                 }
                 StdOut.println();
             }
             else {
-                StdOut.println(s + " not connected to " + v);
+                StdOut.println(s + " to " + v + ": not connected");
             }
         }
     }
