@@ -18,7 +18,8 @@ public class Cycle {
         edgeTo = new int[G.V()];
 
         if (hasSelfLoop(G)) return;
-        if (hasParallelPath(G)) return;
+        if (hasParallelEdges(G)) return;
+
         for(int s = 0; s < G.V(); s++) {
             if (!marked[s]) {
                 dfs(G, s, -1);
@@ -42,7 +43,7 @@ public class Cycle {
     }
 
     // v: w1 w1 w2 ... wn represents parallel path
-    private boolean hasParallelPath(Graph G) {
+    private boolean hasParallelEdges(Graph G) {
         for(int v = 0; v < G.V(); v++) {
             for(int w: G.adj(v)) {
                 if (marked[w]) {
@@ -50,7 +51,7 @@ public class Cycle {
                     cycle.push(v);
                     cycle.push(w);
                     cycle.push(v);
-                    return false;
+                    return true;
                 }
             }
 
@@ -94,7 +95,8 @@ public class Cycle {
     /**
      * Returns the first detected cycle in the graph.
      *
-     * @return the first detected cycle in the graph.
+     * @return the first detected cycle in the graph, 
+     * or {@code null} if the graph has no cycle.
      */
     public Stack<Integer> cycle() {
         return cycle;
