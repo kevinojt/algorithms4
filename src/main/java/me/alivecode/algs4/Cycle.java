@@ -77,7 +77,7 @@ public class Cycle {
                 for(x = v; x != w; x = edgeTo[x]) {
                     cycle.push(x);
                 }
-                cycle.push(x);
+                cycle.push(w);
                 cycle.push(v);
             }
         }
