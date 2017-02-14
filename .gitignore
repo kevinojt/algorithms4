@@ -14,8 +14,14 @@ hs_err_pid*
 # target dir
 target/
 
+<<<<<<< HEAD
 # idea dir
 .idea
 
 
 algorithms4.iml
+=======
+# idea files
+.idea/
+*.iml
+>>>>>>> working
