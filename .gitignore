@@ -14,6 +14,10 @@ hs_err_pid*
 # target dir
 target/
 
+
+algorithms4.iml
+
 # idea files
 .idea/
 *.iml
+
