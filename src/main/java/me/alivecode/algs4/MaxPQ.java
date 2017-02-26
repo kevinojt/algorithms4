@@ -8,7 +8,7 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
- * The {@code MaxPQ} repersents a heap ordered priority queue.
+ * The {@code MaxPQ} represents a heap ordered priority queue.
  */
 public class MaxPQ<Key> implements Iterable<Key> {
     Key[] pq;
