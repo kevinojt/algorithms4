@@ -7,7 +7,7 @@ import java.util.*;
  * which is minimum first.
  * For maximum first priority queue see {@link MaxPQ}.
  */
-public class MinPQ<Key> implements Iterable<Key>{
+public class MinPQ<Key extends Comparable<Key>> implements Iterable<Key>{
     private Key[] pq;
     private int N;
     //private Comparator<Key> comparator;
@@ -26,7 +26,7 @@ public class MinPQ<Key> implements Iterable<Key>{
      * @param initCapacity the initialized capacity.
      */
     public MinPQ(int initCapacity) {
-        this.pq = (Key[]) new Object[initCapacity + 1];
+        this.pq = (Key[]) new Comparable[initCapacity + 1];
         N = 0;
     }
 
@@ -37,7 +37,7 @@ public class MinPQ<Key> implements Iterable<Key>{
      */
     public MinPQ(Key[] keys) {
         N = keys.length;
-        pq = (Key[]) new Objects[N+1];
+        pq = (Key[]) new Comparable[N+1];
         for(int i = 0; i < keys.length; i++) {
             pq[i+1] = keys[i];
         }
@@ -136,7 +136,7 @@ public class MinPQ<Key> implements Iterable<Key>{
     }
 
     private boolean greater(int l, int r) {
-        if (((Comparable)pq[l]).compareTo(pq[r]) == 1) return true;
+        if (pq[l].compareTo(pq[r]) == 1) return true;
         else return false;
     }
 
@@ -153,7 +153,7 @@ public class MinPQ<Key> implements Iterable<Key>{
 
     private void resize(int capacity) {
         assert capacity > N;
-        Key[] tmp = (Key[])new Object[capacity];
+        Key[] tmp = (Key[])new Comparable[capacity];
 
         /*
         for (int i = 1; i <= N; i++) {
@@ -172,7 +172,7 @@ public class MinPQ<Key> implements Iterable<Key>{
         private MinPQ<Key> copy;
 
         public ListIterator() {
-            Key[] keys = (Key[]) new Object[pq.length-1];
+            Key[] keys = (Key[]) new Comparable[pq.length-1];
             // pq is one-based
             for(int i = 1; i < pq.length; i++) {
                 keys[i-1] = pq[i];
