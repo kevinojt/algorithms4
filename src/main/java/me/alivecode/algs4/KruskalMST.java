@@ -45,7 +45,7 @@ public class KruskalMST {
      *
      * @return the minimum spanning tree
      */
-    public Iterable<Edge> mst() {
+    public Iterable<Edge> edges() {
         return mst;
     }
 
@@ -65,10 +65,11 @@ public class KruskalMST {
         KruskalMST mst = new KruskalMST(G);
 
         StdOut.println("mst: ");
-        for(Edge e: mst.mst()){
+        for(Edge e: mst.edges()){
             StdOut.println(e);
         }
-        StdOut.printf("%.5f\n", mst.weight());
+        StdOut.println(mst.weight());
+        //StdOut.printf("%.5f\n", mst.weight());
     }
 
 }

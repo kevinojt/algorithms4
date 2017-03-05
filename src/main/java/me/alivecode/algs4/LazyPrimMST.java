@@ -66,9 +66,9 @@ public class LazyPrimMST {
     /**
      * Returns the minimum spanning tree of the specified graph.
      *
-     * @return the mst
+     * @return the edges in the mst
      */
-    public Iterable<Edge> mst() {
+    public Iterable<Edge> edges() {
         return mst;
     }
 
@@ -78,7 +78,7 @@ public class LazyPrimMST {
         EdgeWeightedGraph G = new EdgeWeightedGraph(in);
         LazyPrimMST mst = new LazyPrimMST(G);
 
-        for (Edge e: mst.mst()) {
+        for (Edge e: mst.edges()) {
             StdOut.println(e);
         }
         StdOut.println(mst.weight);
