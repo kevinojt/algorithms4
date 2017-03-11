@@ -5,7 +5,9 @@ import edu.princeton.cs.algs4.StdOut;
 import java.util.DoubleSummaryStatistics;
 
 /**
- * Created by oujt on 17-3-8.
+ * The {@code DirectedEdge} class represents a directed weighted edge
+ * in a {@link EdgeWeightedDigraph} that containing two vertices that
+ * pointing from one to another.
  */
 public class DirectedEdge {
     private final int v;
@@ -60,7 +62,7 @@ public class DirectedEdge {
      * @return a string represents this directed edge.
      */
     public String toString() {
-        String s = String.format("%s %s %5.5f", v, w, weight);
+        String s = String.format("%s->%s %5.2f", v, w, weight);
         return s;
     }
 

@@ -177,7 +177,7 @@ public class EdgeWeightedGraph {
         for(int v = 0; v < V; v++) {
             s.append(v + ":");
             for(Edge e: adj[v]) {
-                s.append(" " + e);
+                s.append("  " + e);
             }
             s.append(NEWLINE);
         }
