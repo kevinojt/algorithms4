@@ -9,7 +9,7 @@ import java.util.DoubleSummaryStatistics;
  * in a {@link EdgeWeightedDigraph} that containing two vertices that
  * pointing from one to another.
  */
-public class DirectedEdge {
+public class DirectedEdge implements Comparable<DirectedEdge> {
     private final int v;
     private final int w;
     private final double weight;
@@ -64,6 +64,20 @@ public class DirectedEdge {
     public String toString() {
         String s = String.format("%s->%s %5.2f", v, w, weight);
         return s;
+    }
+
+    /**
+     * Compares weight of this edge and the given edge.
+     *
+     * @param that other edge.
+     *
+     * @return a negative integer, zero, positive integer depending on
+     * whether the weight of this edge is less than, equal to, or greater than
+     * the weight of other edge.
+     */
+    public int compareTo(DirectedEdge that) {
+        return  Double.compare(this.weight(), that.weight());
+
     }
 
     // unit test code
