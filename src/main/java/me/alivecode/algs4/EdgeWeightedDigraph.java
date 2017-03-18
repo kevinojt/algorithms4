@@ -162,6 +162,21 @@ public class EdgeWeightedDigraph {
         return s.toString();
     }
 
+    /**
+     * Returns all the edges in the edge-weighted digraph.
+     *
+     * @return all the edges in the edge-weighted digraph
+     */
+    public Iterable<DirectedEdge> edges() {
+        Bag<DirectedEdge> list = new Bag<>();
+        for(int v = 0; v < V; v++) {
+            for(DirectedEdge e : adj[v]) {
+                list.put(e);
+            }
+        }
+        return list;
+    }
+
     private void validateVertex(int v) {
         if (v < 0 || v >= V) {
             throw new IllegalArgumentException(v + " is not between 0 and " + (V-1));
