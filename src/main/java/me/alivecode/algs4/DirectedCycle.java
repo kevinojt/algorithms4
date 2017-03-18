@@ -3,8 +3,6 @@ package me.alivecode.algs4;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 
-import java.util.Iterator;
-
 /**
  * The {@code DirectedCycle} class checks
  * if the specified directed graph has any cycle.
@@ -27,7 +25,7 @@ public class DirectedCycle {
 
         for(int v = 0; v < DG.V(); v++) {
             if (!marked[v]) {
-                dfs(DG, v, -1);
+                dfs(DG, v);
             }
         }
     }
@@ -44,9 +42,9 @@ public class DirectedCycle {
 
         vertex 0 will be marked first and not in any cycle.
         'onStack' make sure marked vertices like vertex 0
-        will not make not closed cycle.
+        will not make unclosed cycle.
      */
-    private void dfs(Digraph DG, int v, int s) {
+    private void dfs(Digraph DG, int v) {
         marked[v] = true;
         onStack[v] = true;
 
@@ -54,7 +52,7 @@ public class DirectedCycle {
             if (cycle != null) return;;
             if (!marked[w]) {
                 edgeTo[w] = v;
-                dfs(DG, w, v);
+                dfs(DG, w);
             }
             else if(onStack[w]) {
                 cycle = new Stack<>();
