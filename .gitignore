@@ -21,3 +21,5 @@ algorithms4.iml
 .idea/
 *.iml
 
+
+src/main/resources/*.txt
