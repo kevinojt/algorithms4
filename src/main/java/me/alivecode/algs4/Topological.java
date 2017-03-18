@@ -1,7 +1,6 @@
 package me.alivecode.algs4;
 
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.*;
 
 /**
  * The {@code Topological} class a data type for
@@ -14,19 +13,28 @@ public class Topological {
     /**
      * Computes the topological order of the specified directed graph.
      *
-     * @param dag the directed graph.
+     * @param G the directed graph.
      */
-    public Topological(Digraph dag) {
-        DirectedCycle cycle = new DirectedCycle(dag);
+    public Topological(Digraph G) {
+        DirectedCycle cycle = new DirectedCycle(G);
 
         if (!cycle.hasCycle()) {
-            DepthFirstOrder finder = new DepthFirstOrder(dag);
+            DepthFirstOrder finder = new DepthFirstOrder(G);
             order = finder.reversePostOrder();
             int i = 0;
-            rank = new int[dag.V()];
+            rank = new int[G.V()];
             for(int v: order) {
                 rank[v] = i++;
             }
+        }
+    }
+
+    public Topological(EdgeWeightedDigraph G) {
+        EdgeWeightedDirectedCycle cycle = new EdgeWeightedDirectedCycle(G);
+
+        if (cycle.hasCycle()) {
+            DepthFirstOrder dfo = new DepthFirstOrder(G);
+            order = dfo.reversePostOrder();
         }
     }
 

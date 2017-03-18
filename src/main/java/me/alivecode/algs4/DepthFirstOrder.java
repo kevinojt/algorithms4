@@ -2,6 +2,7 @@ package me.alivecode.algs4;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
+import sun.security.krb5.internal.rcache.DflCache;
 
 /**
  * The {@code DepthFirstOrder} class represents a data type
@@ -17,20 +18,39 @@ public class DepthFirstOrder {
     private int postOrderCount; // see dfs
 
     /**
-     * Computes the order of visiting vertices in the specified directed graph.
+     * Computes the order of visiting vertices in the specified digraph.
      *
-     * @param DG the directed graph.
+     * @param G the directed graph.
      */
-    public DepthFirstOrder(Digraph DG) {
-        marked = new boolean[DG.V()];
-        pre = new int[DG.V()];
-        post = new int[DG.V()];
+    public DepthFirstOrder(Digraph G) {
+        marked = new boolean[G.V()];
+        pre = new int[G.V()];
+        post = new int[G.V()];
         preOrder = new Queue<>();
         postOrder = new Queue<>();
 
-        for(int v = 0; v < DG.V(); v++) {
+        for(int v = 0; v < G.V(); v++) {
             if(!marked[v]) {
-                dfs(DG, v);
+                dfs(G, v);
+            }
+        }
+    }
+
+    /**
+     * Computes the order of visiting vertices in the specified edge-weighted digraph.
+     *
+     * @param G the edge-weighted digraph
+     */
+    public DepthFirstOrder(EdgeWeightedDigraph G) {
+        marked = new boolean[G.V()];
+        pre = new int[G.V()];
+        post = new int[G.V()];
+        preOrder = new Queue<>();
+        postOrder = new Queue<>();
+
+        for(int v = 0; v < G.V(); v++) {
+            if (!marked[v]) {
+                dfs(G, v);
             }
         }
     }
@@ -43,6 +63,22 @@ public class DepthFirstOrder {
         for(int w: DG.adj(v)) {
             if(!marked[w]) {
                 dfs(DG, w);
+            }
+        }
+
+        post[v] = postOrderCount++;
+        postOrder.enqueue(v);
+    }
+
+    private void dfs(EdgeWeightedDigraph G, int v) {
+        marked[v] = true;
+        pre[v] = preOrderCount++;
+        preOrder.enqueue(v);
+
+        for(DirectedEdge e : G.adj(v)) {
+            int w = e.to();
+            if(!marked[w]) {
+                dfs(G, w);
             }
         }
 
