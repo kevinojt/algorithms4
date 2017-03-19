@@ -1,6 +1,7 @@
 package me.alivecode.algs4;
 
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
 
 /**
  * The {@code Topological} class a data type for
@@ -32,7 +33,7 @@ public class Topological {
     public Topological(EdgeWeightedDigraph G) {
         EdgeWeightedDirectedCycle cycle = new EdgeWeightedDirectedCycle(G);
 
-        if (cycle.hasCycle()) {
+        if (!cycle.hasCycle()) {
             DepthFirstOrder dfo = new DepthFirstOrder(G);
             order = dfo.reversePostOrder();
         }
