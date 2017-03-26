@@ -96,7 +96,7 @@ public class BellmanFordSP {
      * @return the negative cycle
      * @throws UnsupportedOperationException if there is no such cycle
      */
-    public Iterable<DirectedEdge> cycle() {
+    public Iterable<DirectedEdge> negativeCycle() {
         if (!hasNegativeCycle()) {
             throw new UnsupportedOperationException("No negative cost cycle exists");
         }
@@ -219,7 +219,7 @@ public class BellmanFordSP {
         BellmanFordSP sp = new BellmanFordSP(G, s);
         if (sp.hasNegativeCycle()) {
             StdOut.println("Has negative cost cycle");
-            for(DirectedEdge e : sp.cycle()) {
+            for(DirectedEdge e : sp.negativeCycle()) {
                 StdOut.println(e);
             }
         }
