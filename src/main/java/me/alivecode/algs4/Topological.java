@@ -9,7 +9,7 @@ import edu.princeton.cs.algs4.StdOut;
  */
 public class Topological {
     private Iterable<Integer> order;
-    private int[] rank;
+    private int[] rank; // rank[v] = topological order of v
 
     /**
      * Computes the topological order of the specified directed graph.
@@ -30,6 +30,11 @@ public class Topological {
         }
     }
 
+    /**
+     * Computes the topological order of the specified EDAG.
+     *
+     * @param G the acyclic edge-weighted digraph
+     */
     public Topological(EdgeWeightedDigraph G) {
         EdgeWeightedDirectedCycle cycle = new EdgeWeightedDirectedCycle(G);
 
