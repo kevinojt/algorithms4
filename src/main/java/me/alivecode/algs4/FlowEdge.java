@@ -104,38 +104,38 @@ public class FlowEdge {
     /**
      * Returns the residual capacity of the edge in the direction
      *  to the given {@code vertex}.
-     * @param v one endpoint of the edge
+     * @param vertex one endpoint of the edge
      * @return the residual capacity of the edge in the direction to the given vertex
      *   If {@code vertex} is the tail vertex, the residual capacity equals
      *   {@code capacity() - flow()}; if {@code vertex} is the head vertex, the
      *   residual capacity equals {@code flow()}.
      */
-    public double residualCapacityTo(int v) {
-        if (v == this.v) {
+    public double residualCapacityTo(int vertex) {
+        if (vertex == v) {
             return flow;
         }
-        else if (v == w) {
+        else if (vertex == w) {
             return capacity - flow;
         }
         else {
-            throw new IllegalArgumentException(v + " is not one of " + this.v + " and " + w);
+            throw new IllegalArgumentException(vertex + " is not head:" + v + " or tail:" + w);
         }
     }
 
     /**
      * Increases the flow one the edge in the direction to the {@code v}.
-     * @param v one of the endpoints of the edge
+     * @param vertex one of the endpoints of the edge
      * @param delta amount of which to flow
      */
-    public void addResidualFlowTo(int v, double delta) {
-        if (v == this.v) {
+    public void addResidualFlowTo(int vertex, double delta) {
+        if (vertex == v) {
             flow -= delta;
         }
-        else if (v == w) {
+        else if (vertex == w) {
             flow += delta;
         }
         else {
-            throw new IllegalArgumentException(v + " is not one of " + this.v + "and " + w);
+            throw new IllegalArgumentException(vertex + " is not head:" + v + "or tail:" + w);
         }
 
         if (Math.abs(flow) <= FLOATING_POINT_EPSILON) {
