@@ -62,15 +62,21 @@ public class FlowNetwork {
      */
     public FlowNetwork(In in) {
         V = in.readInt();
-        E = in.readInt();
+        int E = in.readInt(); // do NOT use this.E
         if (V < 0) throw new IllegalArgumentException("number of vertices must be nonnegative");
         if (E < 0) throw new IllegalArgumentException("number of edges must be nonnegative");
 
-        for(int i = 0; i < V; i++) {
+        adj = (Bag<FlowEdge>[]) new Bag[V];
+        for(int v = 0; v < V; v++) {
+            adj[v] = new Bag<>();
+        }
+
+        for(int i = 0; i < E; i++) {
             int v = in.readInt();
             int w = in.readInt();
             double c = in.readDouble();
-            addEdge(new FlowEdge(v, w, c));
+            FlowEdge e = new FlowEdge(v, w, c);
+            addEdge(e);
         }
     }
 
