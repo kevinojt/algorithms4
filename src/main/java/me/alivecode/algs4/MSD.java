@@ -132,11 +132,14 @@ public class MSD {
 
         if (d == 4) return;;
 
-        if (count[0] > 0)
-            sort(a, lo, lo + count[0] - 1, d+1, aux);
-        for (int r = 0; r < R; r++)
-            if (count[r+1] > count[r])
-                sort(a, lo + count[r], lo + count[r+1] - 1, d+1, aux);
+        if (count[0] > 0) {
+            sort(a, lo, lo + count[0] - 1, d + 1, aux);
+        }
+        for (int r = 0; r < R; r++) {
+            if (count[r + 1] > count[r]) {
+                sort(a, lo + count[r], lo + count[r + 1] - 1, d + 1, aux);
+            }
+        }
 
     }
 
