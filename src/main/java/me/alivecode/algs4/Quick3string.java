@@ -31,6 +31,9 @@ public class Quick3string {
         int i = lo + 1;
         int lt = lo, gt = hi;
 
+        // lo.i..hi , lt.i..gt =>
+        // lo..i..hi, ..lt..i(eq)gt..
+        // a[lo..lt-1] < v = a[lt..gt] < a[gt+1..hi]
         while (i <= gt) {
             int t = charAt(a[i], d);
             if (t < v) SortUtil.exch(a, lt++, i++);

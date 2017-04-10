@@ -21,18 +21,19 @@ public class MSD {
      */
     public static void sort(String[] a) {
         String[] aux = new String[a.length];
-        sort(a, aux, 0, a.length-1, 0);
+        sort(a, 0, a.length-1, 0, aux);
     }
 
-    private static void sort(String[] a, String[] aux, int lo, int hi, int d) {
+    // Likes quick sort, MSD recursively sorts partitions
+    private static void sort(String[] a, int lo, int hi, int d, String[] aux) {
 
         // cutoff to insertion
         if (hi <= lo + CUTOFF) {
             insertion(a, lo, hi, d);
             return;
-        };
-        int[] count = new int[R + 2];
+        }
 
+        int[] count = new int[R + 2];
         // compute frequency count
         for(int i = lo; i <= hi; i++) {
             count[charAt(a[i], d) + 2]++;
@@ -55,7 +56,7 @@ public class MSD {
 
         // recursively sort each characters (excludes sentinel - 1)
         for(int r = 0; r < R + 1; r++) {
-            sort(a, aux, lo + count[r], lo + count[r+1]-1, d + 1);
+            sort(a, lo + count[r], lo + count[r+1]-1, d + 1, aux);
         }
     }
 
@@ -63,13 +64,14 @@ public class MSD {
     private static void insertion(String[] a, int lo, int hi, int d) {
         for(int i = lo; i <= hi; i++) {
             for(int j = i; j > lo && less(a[j], a[j-1], d); j--) {
-                exch(a, j, j-1);
+                SortUtil.exch(a, j, j-1);
             }
         }
     }
 
-    // compare two strings from dth character
+    // compare two strings from dth character to the end
     private static boolean less(String v, String w, int d) {
+        assert v.substring(0, d).equals(w.substring(0, d));
         for(int i = d; i < Math.min(v.length(), w.length()); i++) {
             if (charAt(v, i) < charAt(w, i)) return true;
             if (charAt(v, i) > charAt(w, i)) return false;
@@ -82,12 +84,6 @@ public class MSD {
             return s.charAt(d);
         }
         return  -1;
-    }
-
-    private static void exch(String[] a, int i, int j) {
-        String tmp = a[i];
-        a[i] = a[j];
-        a[j] = tmp;
     }
 
     /**

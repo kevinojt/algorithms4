@@ -97,20 +97,19 @@ public class TrieST {
 
     private Node delete(Node x, String key, int d) {
         if (x == null) return null;
+
         if (key.length() == d) {
             if (x.val != null) size--;
             x.val = null;
         }
         else {
             int c = charAt(key, d);
-            x.next[c] = delete(x.next[c], key, d + 1);
+            x.next[c] = delete(x.next[c], key, d+1);
         }
 
         if (x.val != null) return x;
         for(int r = 0; r < R; r++) {
-            if (x.next[r] != null) {
-                return x;
-            }
+            if (x.next[r] != null) return x;
         }
         return null;
     }
@@ -148,7 +147,13 @@ public class TrieST {
         }
         */
 
-        trie.put("sea", "sea");
+        String[] a = {"she", "sells", "seashells", "by", "the", "sea", "shore",
+                        "the", "shells", "she", "sells", "are", "surely", "seashells"};
+
+        for(String s : a) {
+            trie.put(s, s);
+        }
+
         trie.put("seashell","seashell");
 
         trie.delete("seashells");
