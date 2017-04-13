@@ -75,6 +75,8 @@ public class TST {
         }
     }
 
+
+
     /**
      * Removes key-value pair associated with the given {@code key}
      * from the symbol table.
@@ -105,9 +107,9 @@ public class TST {
         if (x.val != null) {
             return x;
         }
-        if (x.left      != null ||
-                x.right != null ||
-                x.mid   != null) {
+        if (x.left  != null ||
+            x.right != null ||
+            x.mid   != null) {
             return x;
         }
 

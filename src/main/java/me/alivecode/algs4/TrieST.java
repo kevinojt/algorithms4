@@ -1,6 +1,5 @@
 package me.alivecode.algs4;
 
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
@@ -8,7 +7,7 @@ import edu.princeton.cs.algs4.StdOut;
  * of string key and generic value.
  * It uses Trie data structure to store strings and search.
  */
-public class TrieST {
+public class TrieST<Value> {
     // extended ASCII
     private static final int R = 256;
     private Node root = null;
@@ -36,14 +35,14 @@ public class TrieST {
      * @param key the key
      * @param val the value
      */
-    public void put(String key, Object val) {
+    public void put(String key, Value val) {
         if (key == null) throw new IllegalArgumentException("first argument to put() is null");
         if (val == null) throw new IllegalArgumentException("second argument to put() is null");
         root = put(root, key, val, 0);
     }
 
-    private Node put(Node x, String key, Object val, int d) {
-        if (x == null) { x = new Node(); };
+    private Node put(Node x, String key, Value val, int d) {
+        if (x == null) { x = new Node(); }
         if (key.length() == d) {
             if (x.val == null) size ++;
             x.val = val;
@@ -71,10 +70,17 @@ public class TrieST {
      * @return the value associates with the given key,
      * {@code null} if the symbol table doesn't contain the given key.
      */
-    public Object get(String key) {
+    public Value get(String key) {
         if (key == null) throw new IllegalArgumentException("argument to get() is null");
         Node x = get(root, key, 0);
-        return x == null ? null : x.val;
+        if (x != null) {
+            @SuppressWarnings("unchecked")
+            Value val = (Value) x.val;
+            return val;
+        }
+        else {
+            return null;
+        }
     }
 
     private Node get(Node x, String key, int d) {
@@ -84,6 +90,104 @@ public class TrieST {
         }
         int c = charAt(key, d);
         return get(x.next[c], key, d+1);
+    }
+
+    /**
+     * Returns all keys in the symbol table in ascending order.
+     * @return all keys in the symbol table in ascending order
+     */
+    public Iterable<String> keys() {
+        Queue<String> queue = new Queue<>();
+        collect(root, queue, new StringBuilder());
+        return queue;
+    }
+
+    /**
+     * Returns all keys start with {@code prefix} in the symbol table in ascending order.
+     * @param prefix the prefix
+     * @return all keys start with {@code prefix} in the ascending order
+     */
+    public Iterable<String> keysWithPrefix(String prefix) {
+        if (prefix == null) throw new IllegalArgumentException("argument to keysWithPrefix() is null");
+
+        Node x = get(root, prefix, 0);
+        Queue<String> queue = new Queue<>();
+        collect(x, queue, new StringBuilder(prefix));
+        return queue;
+    }
+
+    private void collect(Node x, Queue<String> queue, StringBuilder prefix) {
+        if (x == null) return;
+
+        if (x.val != null) {
+            queue.enqueue(prefix.toString());
+        }
+
+        for(char r = 0; r < R; r++) {
+            prefix.append(r);
+            collect(x.next[r], queue, prefix);
+            prefix.deleteCharAt(prefix.length() - 1);
+        }
+    }
+
+    /**
+     * Returns key in the symbol table that is the longest prefix of {@code query},
+     *
+     * @param query
+     * @return
+     */
+    public String longestPrefixOf(String query) {
+        if (query == null) throw new IllegalArgumentException("argument to longestPrefixOf() is null");
+        int l = search(root, query, 0, -1);
+        if (l == -1) return null;
+        else return query.substring(0, l);
+    }
+
+    private int search(Node x, String query, int d, int length) {
+        if (x == null) return length;
+        if (x.val != null) length = d;
+        if (query.length() == d) return query.length();
+
+        int c = charAt(query, d);
+        return search(x.next[c], query, d + 1, length);
+    }
+
+    /**
+     * Returns all keys that match the given {@code pattern},
+     * where the . symbol is treated as wildcard character.
+     * @param pattern the pattern
+     * @return all keys that match the given {@code pattern}
+     */
+    public Iterable<String> keysThatMatch(String pattern) {
+        if (pattern == null) throw new IllegalArgumentException("argument to keysThatMatch() is null");
+        Queue<String> results = new Queue<>();
+        collect(root, new StringBuilder(), pattern, results);
+        return results;
+    }
+
+    private void collect(Node x, StringBuilder prefix, String pattern, Queue<String> results) {
+        if (x == null) return;
+        int d = prefix.length();
+        if (d == pattern.length() && x.val != null) {
+            results.enqueue(prefix.toString());
+        }
+        if (d == pattern.length()) {
+            return;
+        }
+
+        char c = pattern.charAt(d);
+        if (c == '.') {
+            for(char r = 0; r < R; r++) {
+                prefix.append(r);
+                collect(x.next[r], prefix, pattern, results);
+                prefix.deleteCharAt(prefix.length() - 1);
+            }
+        }
+        else {
+            prefix.append(c);
+            collect(x.next[c], prefix, pattern, results);
+            prefix.deleteCharAt(prefix.length() - 1);
+        }
     }
 
     /**
@@ -122,30 +226,13 @@ public class TrieST {
     }
 
     private static class Node {
-        Object val;
-        Node[] next = new Node[R];
+        private Object val;
+        private final Node[] next = new Node[R];
     }
 
     // test code
     public static void main(String[] args) {
-        TrieST trie = new TrieST();
-
-        /*
-        while (!StdIn.isEmpty()) {
-            String key = StdIn.readString();
-            if (trie.contains(key)) {
-                StdOut.printf("key: %s, old value: %s\n", key, trie.get(key));
-                Object value = StdIn.readString();
-                trie.put(key ,value);
-                StdOut.printf("key: %s, new value: %s\n", key, trie.get(key));
-            }
-            else {
-                Object value = StdIn.readString();
-                trie.put(key, value);
-                StdOut.printf("key: %s, value: %s\n", key, trie.get(key));
-            }
-        }
-        */
+        TrieST<String> trie = new TrieST<>();
 
         String[] a = {"she", "sells", "seashells", "by", "the", "sea", "shore",
                         "the", "shells", "she", "sells", "are", "surely", "seashells"};
@@ -154,19 +241,44 @@ public class TrieST {
             trie.put(s, s);
         }
 
+        for(String k : trie.keys()) {
+            String v = trie.get(k);
+            if (!k.equals(v)) {
+                StdOut.printf("value not matches key. key: %s, value: %s\n", k, trie.get(k));
+            }
+        }
+
         trie.put("seashell","seashell");
 
+        StdOut.println("----Delete seashells-------------------");
         trie.delete("seashells");
         StdOut.printf("key: %s, value: %s\n", "sea", trie.get("sea"));
 
+        StdOut.println("----Delete sea--------------------------");
         trie.delete("sea");
         StdOut.printf("key: %s, value: %s\n", "sea", trie.get("sea"));
         StdOut.printf("key: %s, value: %s\n", "seashell", trie.get("seashell"));
 
+        StdOut.println("----Delete seashell---------------------");
         trie.put("sea", "sea");
         trie.delete("seashell");
         StdOut.printf("key: %s, value: %s\n", "sea", trie.get("sea"));
         StdOut.printf("key: %s, value: %s\n", "seashell", trie.get("seashell"));
+
+
+        StdOut.println("----test keysWithPrefix-----------------");
+        for (String k : trie.keysWithPrefix("sh")) {
+            StdOut.printf("key: %s, value: %s\n", k, trie.get(k));
+        }
+
+        StdOut.println("----test longestPrefixof-----------------");
+        trie.put("seashells", "seashells");
+        StdOut.println(trie.longestPrefixOf("seashore"));
+
+        StdOut.println("----test keysThatMatch-------------------");
+        for (String k : trie.keysThatMatch("s...l.")) {
+            StdOut.println(trie.get(k));
+        }
 
 
     }
