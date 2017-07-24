@@ -24,6 +24,9 @@ public class LSD {
         final int w = a[0].length();
 
         for(int i = 1; i < n; i++) {
+            if (a[i] == null) {
+                throw new IllegalArgumentException(String.format("The %dth string in a[] is null", i));
+            }
             if (a[i].length() != w) {
                 throw new IllegalArgumentException("All strings in a[] must have same length");
             }
@@ -53,18 +56,22 @@ public class LSD {
         for(int d = w - 1; d >= 0; d--) {
             int[] count = new int[R+1];
 
+            // computes frequency count
             for(int i = 0; i < n; i++) {
                 count[a[i].charAt(d) + 1]++;
             }
 
+            // transform counts to indicies
             for(int r = 0; r < R; r++) {
                 count[r+1] += count[r];
             }
 
+            // distribute
             for(int i = 0; i < n; i++) {
                 aux[count[a[i].charAt(d)]++] = a[i];
             }
 
+            // copy back
             for(int i = 0; i < n; i++) {
                 a[i] = aux[i];
             }
@@ -100,7 +107,7 @@ public class LSD {
             // the left most byte of signed integers
             if (d == w - 1) {
                 int shift1 = count[R] - count[R/2];
-                int shift2 = count[R/2];
+                int shift2 = count[R/2];            // 256/2 = 128
 
                 for(int r = 0; r < R/2; r++) {
                     count[r] += shift1;

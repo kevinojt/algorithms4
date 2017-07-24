@@ -25,6 +25,7 @@ public class MSD {
     }
 
     // Likes quick sort, MSD recursively sorts partitions
+    // MSD uses R partitions
     private static void sort(String[] a, int lo, int hi, int d, String[] aux) {
 
         // cutoff to insertion
