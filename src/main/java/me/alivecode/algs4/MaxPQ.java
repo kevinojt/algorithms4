@@ -8,15 +8,15 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
- * The {@code MaxPQ} repersents a heap ordered priority queue.
+ * The {@code MaxPQ} represents a heap ordered priority queue.
  */
-public class MaxPQ<Key> implements Iterable<Key> {
+public class MaxPQ<Key extends Comparable<Key>> implements Iterable<Key> {
     Key[] pq;
     int N;
     Comparator cmp;
 
     public MaxPQ(int capacity, Comparator cmp) {
-        pq = (Key[])(new Object[capacity+1]);
+        pq = (Key[])(new Comparable[capacity+1]);
         N = 0;
         this.cmp = cmp;
     }
@@ -40,7 +40,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
     public MaxPQ(Key[] keys, Comparator cmp) {
         N = keys.length;
         this.cmp = cmp;
-        pq = (Key[]) new Object[keys.length+1];
+        pq = (Key[]) new Comparable[keys.length+1];
         for (int i = 0; i < keys.length; i++) {
             pq[i+1] = keys[i];
         }
@@ -85,7 +85,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
 
     private boolean less(int i, int j) {
         if (cmp != null) return cmp.compare(pq[i], pq[j]) < 0;
-        return ((Comparable)pq[i]).compareTo(pq[j]) < 0;
+        return (pq[i]).compareTo(pq[j]) < 0;
     }
 
     private boolean isMaxHeap() {
@@ -108,7 +108,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
     
     private void resize(int capacity) {
         if (capacity <= N - 1) return;
-        Key[] tmp = (Key[]) new Object[capacity];
+        Key[] tmp = (Key[]) new Comparable[capacity];
         for(int i = N; i >= 1; i--) {
            tmp[i] = pq[i];
         }
@@ -125,7 +125,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
             // Construct copy with arrays is much more faster
             // than by insert key into copy one by one.
             // Copy pg to new arr off-by-one because pg is one-based. 
-            Key[] keys = (Key[])new Object[pq.length-1];
+            Key[] keys = (Key[])new Comparable[pq.length-1];
             for(int i = 1; i < pq.length; i++) {
                 keys[i-1] = pq[i];
             }

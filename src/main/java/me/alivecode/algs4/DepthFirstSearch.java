@@ -81,12 +81,5 @@ public class DepthFirstSearch {
             }
         }
 
-        StdOut.println();
-        if (search.count() != G.V()) {
-            StdOut.println("NOT connected.");
-        } 
-        else {
-            StdOut.println("connected.");
-        }
     }
 }
